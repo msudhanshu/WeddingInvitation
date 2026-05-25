@@ -1,0 +1,109 @@
+import React, { Fragment } from 'react';
+import { motion } from 'motion/react';
+import { LAYER_ASSETS } from '../layerAssets';
+import { ImageWithFallback } from './ImageWithFallback';
+import { flowerMilestone, milestoneText } from '../milestoneConfig';
+
+interface LotusFlowersProps {
+  onLotusClick: (index: number) => void;
+  /** Boat leg: `0` = start; anchored at stop `index + 1` for each flower */
+  boatPosition: number;
+}
+
+/** Base scale only (farther milestones look smaller). */
+function lotusIdleBaseScale(index: number): number {
+  switch (index) {
+    case 0:
+      return 0.5;
+    case 1:
+      return 1.2;
+    case 2:
+      return 1.75;
+    default:
+      return 1.35;
+  }
+}
+
+/** Idle + highlight when boat is anchored at this lotus (`boatPosition === index + 1`). */
+function lotusScaleFor(index: number, boatPosition: number): number {
+  const base = lotusIdleBaseScale(index);
+  if (boatPosition === index + 1) {
+    return base * 1.18;
+  }
+  return base;
+}
+
+function lotusBobY(index: number): [number, number, number] {
+  if (index <= 1) return [0, -1 - index, 0];
+  if (index === 2) return [0, -3, 0];
+  return [0, -2.5, 0];
+}
+
+/** Vertical bob speed: farther lotus floats more slowly. */
+function lotusBobDurationSec(index: number): number {
+  return index <= 1 ? (index === 0 ? 4.5 : 3) : 3;
+}
+
+export function LotusFlowers({ onLotusClick, boatPosition }: LotusFlowersProps) {
+  /** `left/top` percentages — tweak 4th (wedding lotus near groom corner). */
+  const lotusPositions = [
+    { top: '35%', left: '35%', z: 24 },
+    { top: '50%', left: '56%', z: 30 },
+    { top: '64%', left: '5%', z: 30 },
+    { top: '75%', left: '57%', z: 41 },
+  ];
+
+  return (
+    <Fragment>
+      {lotusPositions.map((position, index) => {
+        const m = flowerMilestone(index);
+
+        return (
+          <motion.div
+            key={index}
+            className="absolute flex cursor-pointer flex-col items-center"
+            style={{ top: position.top, left: position.left, zIndex: position.z }}
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.95 }}
+            animate={{
+              scale: lotusScaleFor(index, boatPosition),
+              y: lotusBobY(index),
+            }}
+            transition={{
+              y: {
+                repeat: Infinity,
+                duration: lotusBobDurationSec(index),
+                ease: 'easeInOut',
+                delay: index * 0.45,
+              },
+              scale: { duration: 0.3 },
+            }}
+            role="presentation"
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onLotusClick(index);
+              }}
+              aria-label={
+                milestoneText(m.title) ? `Go to ${m.title!.trim()}` : `Go to flower ${index + 1}`
+              }
+              className="flex flex-col items-center border-0 bg-transparent p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#8fb899]/80"
+            >
+              <div className="relative h-16 w-16">
+                <ImageWithFallback
+                  src={LAYER_ASSETS.flowers[index]}
+                  alt=""
+                  draggable={false}
+                  className="relative z-[1] h-full w-full object-contain drop-shadow-2xl select-none"
+                />
+                <div className="animate-pulse absolute inset-0 rounded-full bg-pink-400/30 blur-xl" />
+              </div>
+            </button>
+          </motion.div>
+        );
+      })}
+    </Fragment>
+  );
+}

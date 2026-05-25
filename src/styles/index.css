@@ -1,0 +1,29 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* Mobile-only invite: hide scene on viewports ≥640px (tablets / desktop). */
+.invite-desktop-only-message {
+  display: none;
+}
+@media (min-width: 640px) {
+  .invite-desktop-only-message {
+    display: flex;
+  }
+  .invite-scene-root {
+    display: none !important;
+  }
+}
+
+/* Portrait-first: on narrow phones in landscape, prompt rotation. */
+.invite-rotate-message {
+  display: none;
+}
+@media (max-width: 639px) and (orientation: landscape) {
+  .invite-rotate-message {
+    display: flex;
+  }
+  .invite-scene-root {
+    display: none !important;
+  }
+}
