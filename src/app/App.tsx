@@ -36,6 +36,11 @@ export default function App() {
 
   const boatPositionRef = useRef(0);
   const navigationTimeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+  /**
+   * On load the boat stays at bride (leg 0) with no popup. The first “next” (sky tap or →)
+   * opens leg 0’s card before moving toward leg 1 so the bride stop isn’t skipped.
+   */
+  const brideIntroFromNextConsumedRef = useRef(false);
 
   useEffect(() => {
     boatPositionRef.current = boatPosition;
@@ -60,6 +65,10 @@ export default function App() {
   const navigateBoatSequential = (fromInput: number, toInput: number) => {
     const from = clampBoatLeg(fromInput);
     const to = clampBoatLeg(toInput);
+
+    if (from !== to && from === 0 && to > 0) {
+      brideIntroFromNextConsumedRef.current = true;
+    }
 
     clearNavigation();
 
@@ -107,7 +116,10 @@ export default function App() {
 
   const handleBrideHomeClick = () => {
     if (boatPositionRef.current === 0) {
-      if (ENABLE_EVENT_MODAL) reopenMilestoneModal(setSelectedMilestoneLeg, 0);
+      if (ENABLE_EVENT_MODAL) {
+        brideIntroFromNextConsumedRef.current = true;
+        reopenMilestoneModal(setSelectedMilestoneLeg, 0);
+      }
       return;
     }
     setSelectedMilestoneLeg(null);
@@ -129,12 +141,20 @@ export default function App() {
   };
 
   const handleNextLeg = () => {
+    if (
+      ENABLE_EVENT_MODAL &&
+      boatPositionRef.current === 0 &&
+      !brideIntroFromNextConsumedRef.current
+    ) {
+      brideIntroFromNextConsumedRef.current = true;
+      setSelectedMilestoneLeg(0);
+      return;
+    }
     setSelectedMilestoneLeg(null);
     navigateBoatSequential(boatPositionRef.current, boatPositionRef.current + 1);
   };
 
   const handleBackgroundNext = () => {
-    setSelectedMilestoneLeg(null);
     handleNextLeg();
   };
 
