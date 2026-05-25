@@ -20,7 +20,7 @@ function lotusIdleBaseScale(index: number): number {
     case 2:
       return 1.55;
     default:
-      return 1.35;
+      return 2.00;
   }
 }
 

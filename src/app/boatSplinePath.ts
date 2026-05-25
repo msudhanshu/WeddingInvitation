@@ -51,13 +51,13 @@ export const BOAT_SPLINE_KNOTS: BoatSplineKnot[] = [
     top: 40,
     rotateDeg: 0,
   },
-  // { id: 'guide-hook-west', left: 41, top: 40 },
+  { id: 'guide-hook-west', left: 45, top: 45 },
   // Flower 3 (Lotus ~ 5%, 64% — boat hugs left bend)
   {
     id: 'flower-3-stop',
     mileLeg: 3,
     left: 20,
-    top: 55,
+    top: 60,
     rotateDeg: 0,
   },
   { id: 'guide-towards-wedding', left: 22, top: 70 },
@@ -65,7 +65,7 @@ export const BOAT_SPLINE_KNOTS: BoatSplineKnot[] = [
   {
     id: 'flower-4-wedding-stop',
     mileLeg: 4,
-    left: 30,
+    left: 26,
     top: 88,
     rotateDeg: 0,
   },

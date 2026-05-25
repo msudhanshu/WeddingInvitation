@@ -24,11 +24,12 @@ interface VillagesProps {
  * House “boxes” — positioning (edit here):
  * • Bride wrapper: `motion.div` below with top/left and optional scale (search “BRIDE POSITION”).
  * • Groom wrapper: `motion.div` — **bottom-right corner** (`max` + safe-area insets; search “GROOM POSITION”).
- * Tap-hit size: `TRANSPARENT_HIT_W` / `TRANSPARENT_HIT_H` on the invisible div inside `VillageTarget`.
+ * Tap-hit: large invisible block + label (`min` sizes below are tuned for mobile ~44pt+ targets).
  */
 
-const TRANSPARENT_HIT_W = '4.75rem';
-const TRANSPARENT_HIT_H = '4.75rem';
+/** Minimum touch width/height for the clear sky area above the chip (iOS-friendly). */
+const TRANSPARENT_HIT_W = 'min(10.5rem, 42vw)';
+const TRANSPARENT_HIT_H = 'min(7.5rem, 32vw)';
 
 function VillageTarget({
   onClick,
@@ -44,20 +45,21 @@ function VillageTarget({
         e.stopPropagation();
         onClick();
       }}
-      className="flex cursor-pointer flex-col items-center gap-1.5 border-0 bg-transparent p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+      className="flex min-h-[11rem] min-w-[9.5rem] max-w-[12rem] cursor-pointer touch-manipulation flex-col items-stretch gap-2 border-0 bg-transparent p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
       aria-label={villageLabel}
     >
-      {/* Invisible tap target (no outline); size from TRANSPARENT_HIT_* above */}
       <div
-        className="rounded-xl bg-transparent shrink-0"
+        className="shrink-0 rounded-2xl bg-transparent"
         style={{
           width: TRANSPARENT_HIT_W,
+          minWidth: '100%',
           height: TRANSPARENT_HIT_H,
+          minHeight: '6.5rem',
           touchAction: 'manipulation',
         }}
         aria-hidden
       />
-      <div className="max-w-[9.5rem] rounded-lg border border-white/40 bg-black/35 px-2.5 py-1.5 backdrop-blur-sm">
+      <div className="max-w-[9.5rem] self-center rounded-lg border border-white/40 bg-black/35 px-2.5 py-1.5 backdrop-blur-sm">
         <p className="text-center text-[11px] font-semibold tracking-tight text-white drop-shadow">{villageLabel}</p>
       </div>
     </button>

@@ -25,6 +25,10 @@ export interface MilestoneEventCopy {
   mapsUrl?: string;
   /** Link label in the popup — default “Open in Google Maps” */
   mapsLabel?: string;
+  /**
+   * Popup body: use `\n` for line breaks; wrap text in `**double asterisks**` for bold
+   * (pair `**` segments only — nesting not supported).
+   */
   description?: string;
   /** Visual accent — optional */
   color?: MilestoneAccent;
@@ -65,40 +69,45 @@ export function milestoneMapsHref(url: string | undefined | null): string | unde
  * `MILESTONES_BY_LEG[4]` still supplies the short name for the map journey / flower label.
  */
 export const WEDDING_CEREMONY_FULLSCREEN: WeddingCeremonyFullscreenCopy = {
-  headline: 'Wedding Ceremony',
-  subhead: 'With love, we invite you to celebrate with us',
-  dateLine: 'Sunday, June 22, 2026',
-  timeLine: '10:00 AM – 2:00 PM',
-  venue: "Groom's Family Estate",
-  venueNote: 'Ceremony followed by lunch and reception',
+  headline: 'Puja weds Anuj',
+  // subhead: 
+  // 'Puja \n'+
+  // '    weds\n'+
+  // '         Anuj',
+  dateLine: 'Sunday, June 21, 2026',
+  timeLine: '06:00 PM – 11:00 PM',
+  venue: 
+  "Parmeshwar banquet hall, Kumharar gumati, Vachasatpati Nager," +
+  "Sandalpur, Patna, Bihar-6",
+  // venueNote: 'Ceremony followed by dinner',
   invitation:
     'We would be honoured by your presence as we begin our new chapter together.\n\n' +
     'Kindly save the date — detailed schedule and logistics will be shared closer to the day.',
   sections: [
     {
       title: 'Schedule',
-      body: 'Morning ceremony · family portraits · reception',
-    },
-    {
-      title: 'Gifts',
-      body: 'Your presence is our greatest gift. No boxed gifts, please.',
+      body: "Barrat will start from groom's house at 70feet at 6pm",
     },
   ],
-  dressCode: 'Traditional / festive — colours welcome',
-  rsvp: 'Please RSVP by 1 June 2026 — contact us on the numbers shared in your invite.',
-  footerNote: 'We can’t wait to celebrate with you.',
-  // mapsUrl: 'https://maps.google.com/...',
+  // dressCode: 'Traditional / festive — colours welcome',
+  // rsvp: 'Please RSVP by 1 June 2026 — contact us on the numbers shared in your invite.',
+  // footerNote: 'We can’t wait to celebrate with you.',
+  mapsUrl: 'https://maps.app.goo.gl/P7adP5Z7H5omUEK79',
 };
 
 /** `leg` matches `boatPosition`; same index selects modal content. */
 export const MILESTONES_BY_LEG: readonly MilestoneEventCopy[] = [
   {
-    title: "Bride's",
+    title: "Bride: Puja",
     eventDateISO: '2026-01-10',
-    date: '10 January 2026',
+    date: '28 Feb 2026',
     location: "Village- Mathura, Hajipur, Vaishali, Bihar",
-    description: 'Daughter of : \n' +
-    'Miss Lili Prabhakar and Prof Prabhat Prabhakar',
+    description:
+      '**Engr Puja Prabhakar**\n' +
+      'Engineer at Mahindra Research valley\n'+
+      'MTech from NIT CALICUT\n' +
+      'Daughter of \n' +
+      'Miss Lili Prabhakar &\n Prof Prabhat Prabhakar',
     // Example: uncomment and paste share link from Google Maps
     // mapsUrl: 'https://maps.google.com/?q=Hajipur+Vaishali+Bihar',
     color: 'rose',
@@ -133,20 +142,26 @@ export const MILESTONES_BY_LEG: readonly MilestoneEventCopy[] = [
   },
   {
     title: 'Wedding Ceremony',
-    eventDateISO: '2026-06-22',
-    date: 'June 22, 2026',
-    time: '10:00 AM – 2:00 PM',
-    location: "Groom's Family Estate",
+    eventDateISO: '2026-06-21',
+    date: 'June 21, 2026',
+    time: '05:00 PM – 11:00 PM',
+    location: 
+    "Parmeshwar banquet hall, Kumharar gumati, Vachasatpati Nager," +
+    "Sandalpur, Patna, Bihar-6"
+    ,
     description: 'The sacred ceremony and grand reception.',
     color: 'red',
   },
   {
-    title: 'Groom’s',
-    eventDateISO: '2026-06-23',
-    date: 'June 23, 2026',
+    title: 'Groom: Anuj',
+    eventDateISO: '2027-06-22',
     location: 'Village- Pachapan-Par, Nadaul, Patna, Bihar',
-    description: 'Son of : \n' +
-    'Miss Dharmashila Devi and Engr R.P Prasad',
+    description: 
+    '**Manjeet Sudhanshu (Anuj) ** \n' +
+    'Engineer at Jio \n'+
+    'BTech from IIT GUWAHATI\n' +
+    'Son of : \n' +
+    'Miss Dharmashila Devi &\n Engr Ram Pravesh Prasad',
     // mapsUrl: 'https://maps.google.com/...',
     color: 'red',
   },

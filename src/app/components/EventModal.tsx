@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, MapPin, Clock, ExternalLink } from 'lucide-react';
 import { MILESTONES_BY_LEG, milestoneMapsHref, milestoneText, type MilestoneAccent } from '../milestoneConfig';
@@ -6,6 +7,26 @@ interface EventModalProps {
   /** Matches `boatPosition` / milestone leg (inclusive **`0`**…**`5`**). */
   milestoneLeg: number;
   onClose: () => void;
+}
+
+/**
+ * Renders `description`: newline = line break (`whitespace-pre-line`); segments between `**`…`**` = bold.
+ */
+function MilestoneFormattedDescription({ text }: { text: string }) {
+  const chunks = text.trim().split('**');
+  return (
+    <>
+      {chunks.map((chunk, i) =>
+        i % 2 === 1 ? (
+          <strong key={i} className="font-semibold text-gray-900">
+            {chunk}
+          </strong>
+        ) : (
+          <Fragment key={i}>{chunk}</Fragment>
+        ),
+      )}
+    </>
+  );
 }
 
 function accentCalendarClass(color: MilestoneAccent | undefined): string {
@@ -125,9 +146,9 @@ export function EventModal({ milestoneLeg, onClose }: EventModalProps) {
             ) : null}
             {hasDescription ? (
               <p
-                className={`text-[10px] leading-relaxed text-gray-700 ${showDescDivider ? 'border-t border-gray-400/30 pt-2' : 'pt-0.5'}`}
+                className={`whitespace-pre-line text-[10px] leading-relaxed text-gray-700 ${showDescDivider ? 'border-t border-gray-400/30 pt-2' : 'pt-0.5'}`}
               >
-                {event.description!.trim()}
+                <MilestoneFormattedDescription text={event.description!} />
               </p>
             ) : null}
           </div>

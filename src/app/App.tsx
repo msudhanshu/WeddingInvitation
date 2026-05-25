@@ -9,6 +9,7 @@ import { Villages } from './components/Villages';
 import { EventModal } from './components/EventModal';
 import { WeddingCeremonyFullscreenModal } from './components/WeddingCeremonyFullscreenModal';
 import { MobileInviteShell } from './components/MobileInviteShell';
+import { BackgroundMusic } from './components/BackgroundMusic';
 import { cn } from './components/ui/utils';
 import { GROOM_ADDRESS_LEG, WEDDING_CEREMONY_LEG, isLegMilestoneDateBeforeToday } from './milestoneConfig';
 
@@ -20,6 +21,12 @@ const ENABLE_EVENT_MODAL = true;
 
 function clampBoatLeg(n: number): number {
   return Math.max(0, Math.min(BOAT_MAX_LEG, n));
+}
+
+/** Close then reopen so React shows the modal again when tapping the same milestone. */
+function reopenMilestoneModal(setLeg: (v: number | null) => void, leg: number) {
+  setLeg(null);
+  queueMicrotask(() => setLeg(leg));
 }
 
 export default function App() {
@@ -89,19 +96,27 @@ export default function App() {
   };
 
   const handleLotusClick = (index: number) => {
-    setSelectedMilestoneLeg(null);
     const target = clampBoatLeg(index + 1);
+    if (boatPositionRef.current === target) {
+      if (ENABLE_EVENT_MODAL) reopenMilestoneModal(setSelectedMilestoneLeg, target);
+      return;
+    }
+    setSelectedMilestoneLeg(null);
     navigateBoatSequential(boatPositionRef.current, target);
   };
 
   const handleBrideHomeClick = () => {
+    if (boatPositionRef.current === 0) {
+      if (ENABLE_EVENT_MODAL) reopenMilestoneModal(setSelectedMilestoneLeg, 0);
+      return;
+    }
     setSelectedMilestoneLeg(null);
     navigateBoatSequential(boatPositionRef.current, 0);
   };
 
   const handleGroomHomeClick = () => {
     if (boatPositionRef.current >= BOAT_MAX_LEG) {
-      setSelectedMilestoneLeg(GROOM_ADDRESS_LEG);
+      if (ENABLE_EVENT_MODAL) reopenMilestoneModal(setSelectedMilestoneLeg, GROOM_ADDRESS_LEG);
       return;
     }
     setSelectedMilestoneLeg(null);
@@ -136,8 +151,9 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-[100dvh] w-full bg-zinc-950">
+    <div className="min-h-[100dvh] w-full">
       <MobileInviteShell>
+        <BackgroundMusic />
         <div className="relative h-full w-full overflow-hidden bg-[#8fb899]">
           <div
             className={cn(
