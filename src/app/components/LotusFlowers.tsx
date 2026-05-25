@@ -16,9 +16,9 @@ function lotusIdleBaseScale(index: number): number {
     case 0:
       return 0.5;
     case 1:
-      return 1.2;
+      return 1.0;
     case 2:
-      return 1.75;
+      return 1.55;
     default:
       return 1.35;
   }
@@ -36,7 +36,7 @@ function lotusScaleFor(index: number, boatPosition: number): number {
 function lotusBobY(index: number): [number, number, number] {
   if (index <= 1) return [0, -1 - index, 0];
   if (index === 2) return [0, -3, 0];
-  return [0, -2.5, 0];
+  return [0, 0, 0];
 }
 
 /** Vertical bob speed: farther lotus floats more slowly. */
@@ -48,9 +48,9 @@ export function LotusFlowers({ onLotusClick, boatPosition }: LotusFlowersProps) 
   /** `left/top` percentages — tweak 4th (wedding lotus near groom corner). */
   const lotusPositions = [
     { top: '35%', left: '35%', z: 24 },
-    { top: '50%', left: '56%', z: 30 },
-    { top: '64%', left: '5%', z: 30 },
-    { top: '75%', left: '57%', z: 41 },
+    { top: '42%', left: '58%', z: 30 },
+    { top: '60%', left: '0%', z: 30 },
+    { top: '75%', left: '46%', z: 41 },
   ];
 
   return (

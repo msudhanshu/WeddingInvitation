@@ -23,7 +23,7 @@ interface VillagesProps {
 /**
  * House “boxes” — positioning (edit here):
  * • Bride wrapper: `motion.div` below with top/left and optional scale (search “BRIDE POSITION”).
- * • Groom wrapper: `motion.div` with right/bottom (search “GROOM POSITION”).
+ * • Groom wrapper: `motion.div` — **bottom-right corner** (`max` + safe-area insets; search “GROOM POSITION”).
  * Tap-hit size: `TRANSPARENT_HIT_W` / `TRANSPARENT_HIT_H` on the invisible div inside `VillageTarget`.
  */
 
@@ -82,9 +82,9 @@ export function Villages({ boatPosition, onBrideHomeClick, onGroomHomeClick }: V
         <VillageTarget onClick={onBrideHomeClick} villageLabel={milestoneChipTitle(bride, "Bride's village")} />
       </motion.div>
 
-      {/* GROOM POSITION — change right / bottom / scale here */}
+      {/* GROOM POSITION — bottom-right corner (inset + safe areas; tune here) */}
       <motion.div
-        className="absolute right-[8%] bottom-[5%] z-[42]"
+        className="absolute right-[max(0.5rem,env(safe-area-inset-right))] bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-[42]"
         animate={atGroom ? { scale: [1, 1.04, 1] } : { scale: 1 }}
         transition={atGroom ? { repeat: Infinity, duration: 2.2, ease: 'easeInOut' } : {}}
       >
