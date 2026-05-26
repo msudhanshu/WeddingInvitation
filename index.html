@@ -12,7 +12,8 @@
 
     <!--
       Link preview (WhatsApp, iMessage, Slack, etc.): crawlers read these tags from raw HTML.
-      og:image must be an absolute HTTPS URL. Update the domain if you change hosting.
+      Use a small JPEG for og:image — very large PNGs often fail to fetch and the preview shows text only.
+      Splash can still use /card.png (full quality). Re-export og-image.jpg if you replace the card artwork.
     -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://weddinginvitation.sudhanshu-manjeet.workers.dev/" />
@@ -23,8 +24,11 @@
     />
     <meta
       property="og:image"
-      content="https://weddinginvitation.sudhanshu-manjeet.workers.dev/card.png"
+      content="https://weddinginvitation.sudhanshu-manjeet.workers.dev/og-image.jpg"
     />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="672" />
+    <meta property="og:image:height" content="900" />
     <meta property="og:image:alt" content="Wedding invitation card — Puja and Manjeet" />
     <meta property="og:locale" content="en_IN" />
 
@@ -36,7 +40,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://weddinginvitation.sudhanshu-manjeet.workers.dev/card.png"
+      content="https://weddinginvitation.sudhanshu-manjeet.workers.dev/og-image.jpg"
     />
 
     <style>
