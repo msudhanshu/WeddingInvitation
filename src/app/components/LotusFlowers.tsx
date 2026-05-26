@@ -16,9 +16,9 @@ function lotusIdleBaseScale(index: number): number {
     case 0:
       return 0.5;
     case 1:
-      return 1.0;
+      return 0.75;
     case 2:
-      return 1.55;
+      return 1.00;
     default:
       return 2.00;
   }
@@ -34,7 +34,8 @@ function lotusScaleFor(index: number, boatPosition: number): number {
 }
 
 function lotusBobY(index: number): [number, number, number] {
-  if (index <= 1) return [0, -1 - index, 0];
+  if (index <= 0) return [0, -1 - index, 0];
+  if (index == 1) return [0, -1, 0];
   if (index === 2) return [0, -3, 0];
   return [0, 0, 0];
 }

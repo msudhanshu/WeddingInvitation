@@ -1,6 +1,7 @@
 @import './fonts.css';
 @import './tailwind.css';
-@import './theme.css';
+@import './wind-drift.css';
+@import './river-flow.css';
 
 /**
  * Outer frame: plain dark base + soft gradients + subtle diagonal texture.

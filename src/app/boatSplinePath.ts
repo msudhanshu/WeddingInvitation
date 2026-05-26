@@ -29,8 +29,8 @@ export const BOAT_SPLINE_KNOTS: BoatSplineKnot[] = [
   {
     id: 'bride-stop',
     mileLeg: 0,
-    left: 52,
-    top: 26,
+    left: 49,
+    top: 27,
     rotateDeg: 0,
   },
   { id: 'guide-bride-s', left: 50, top: 27 },

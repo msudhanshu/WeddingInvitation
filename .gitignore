@@ -1,6 +1,10 @@
 node_modules
 dist
 
+# Local backup copies / snapshots
+backup/
+@backup/
+
 # wrangler files
 .wrangler
 .dev.vars*

@@ -1,0 +1,7 @@
+/** River layer mount (WebGL / static — no busy CSS stripes). */
+.invite-river-mount {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}

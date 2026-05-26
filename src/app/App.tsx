@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { GrassBackground } from './components/GrassBackground';
 import { ForestBackground } from './components/ForestBackground';
+import { WindDrift } from './components/WindDrift';
 import { RiverPath } from './components/RiverPath';
 import { LotusFlowers } from './components/LotusFlowers';
 import { Boat, BOAT_MOVE_DURATION_SEC, BOAT_MAX_LEG } from './components/Boat';
@@ -14,14 +15,14 @@ import { cn } from './components/ui/utils';
 import { GROOM_ADDRESS_LEG, WEDDING_CEREMONY_LEG, isLegMilestoneDateBeforeToday } from './milestoneConfig';
 
 /** Toggle when you want the `river-bg` overlay back. */
-const SHOW_RIVER_LAYER = false;
+const SHOW_RIVER_LAYER = true;
 
 /** Set `true` to open event modals after each journey; keep `false` while tuning the scene. */
 const ENABLE_EVENT_MODAL = true;
 
 /**
  * Simulated “next taps” until the wedding fullscreen opens — passive viewers still see the full ride.
- * Stops permanently once ceremony is visible; disables if the guest navigates manually (lotus/houses/prev).
+ * Stops permanently once ceremony is visible, or whenever the guest touches the UI (overlay, arrows, modal, markers).
  */
 const ENABLE_AUTO_JOURNEY_TO_WEDDING = ENABLE_EVENT_MODAL;
 
@@ -65,13 +66,13 @@ export default function App() {
   const brideIntroFromNextConsumedRef = useRef(false);
 
   const autopilotTimersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
-  /** Manual nav (flowers / villages / backward) disables simulated journey — overlay / → keep autopilot. */
+  /** Any deliberate guest interaction disables simulated journey until reload. */
   const suppressAutopilotRef = useRef(false);
   /** Wedding fullscreen reached once — never auto-advance beyond that invite. */
   const autopilotEndedAtWeddingRef = useRef(false);
 
-  const handleNextLegRef = useRef(_noopNext);
-  const handleCloseModalRef = useRef(_noopClose);
+  const handleAdvanceNextLegRef = useRef(_noopNext);
+  const handleDismissMilestoneModalRef = useRef(_noopClose);
 
   function clearAutopilotTimers() {
     autopilotTimersRef.current.forEach(clearTimeout);
@@ -204,7 +205,8 @@ export default function App() {
     navigateBoatSequential(boatPositionRef.current, boatPositionRef.current - 1);
   };
 
-  const handleNextLeg = () => {
+  /** One leg forward — used by autopilot only (does not call `suppressAutopilot`). */
+  function advanceNextLeg() {
     if (
       ENABLE_EVENT_MODAL &&
       boatPositionRef.current === 0 &&
@@ -216,19 +218,31 @@ export default function App() {
     }
     setSelectedMilestoneLeg(null);
     navigateBoatSequential(boatPositionRef.current, boatPositionRef.current + 1);
-  };
+  }
+
+  function handleNextLeg() {
+    suppressAutopilot();
+    advanceNextLeg();
+  }
 
   const handleBackgroundNext = () => {
-    handleNextLeg();
+    suppressAutopilot();
+    advanceNextLeg();
   };
 
-  const handleCloseModal = () => {
+  /** Autopilot timers call this — no suppress. Guests use `handleCloseModal`. */
+  function dismissMilestoneModal() {
     setSelectedMilestoneLeg(null);
-  };
+  }
+
+  function handleCloseModal() {
+    suppressAutopilot();
+    dismissMilestoneModal();
+  }
 
   useEffect(() => {
-    handleNextLegRef.current = handleNextLeg;
-    handleCloseModalRef.current = handleCloseModal;
+    handleAdvanceNextLegRef.current = advanceNextLeg;
+    handleDismissMilestoneModalRef.current = dismissMilestoneModal;
   });
 
   /** Simulated progression: dwell on each milestone, then sail until wedding fullscreen stays open. */
@@ -252,7 +266,7 @@ export default function App() {
     }
 
     if (selectedMilestoneLeg !== null) {
-      queue(AUTO_JOURNEY_MODAL_DWELL_MS, () => handleCloseModalRef.current());
+      queue(AUTO_JOURNEY_MODAL_DWELL_MS, () => handleDismissMilestoneModalRef.current());
       return;
     }
 
@@ -263,7 +277,7 @@ export default function App() {
         ? AUTO_JOURNEY_FIRST_PAUSE_MS
         : AUTO_JOURNEY_SCENE_PAUSE_MS;
 
-    queue(pauseMs, () => handleNextLegRef.current());
+    queue(pauseMs, () => handleAdvanceNextLegRef.current());
   }, [boatPosition, navTransitLocked, selectedMilestoneLeg]);
 
   const atFirstLeg = boatPosition <= 0;
@@ -288,6 +302,8 @@ export default function App() {
             <GrassBackground />
 
             <ForestBackground />
+
+            <WindDrift />
 
             {/* Empty sky / framing: tap advances one leg (flowers & houses sit above). */}
             <button

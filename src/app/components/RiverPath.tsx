@@ -1,29 +1,15 @@
+import React from 'react';
 import { LAYER_ASSETS } from '../layerAssets';
-import { ImageWithFallback } from './ImageWithFallback';
+import { RiverWaterShader } from './RiverWaterShader';
 
+/** Winding river plate; WebGL fragment shader warps + glints the texture (falls back to static PNG). */
 export function RiverPath() {
   return (
-    <div className="river-path-layer pointer-events-none absolute inset-0 z-10 overflow-hidden">
-      <ImageWithFallback
-        src={LAYER_ASSETS.river}
-        alt=""
-        draggable={false}
-        className="h-full w-full object-cover object-center mix-blend-screen select-none opacity-[0.95]"
+    <div className="invite-river-mount absolute inset-0 z-10 mix-blend-soft-light opacity-[0.84]">
+      <RiverWaterShader
+        textureSrc={LAYER_ASSETS.river}
+        imgClassName="h-full w-full object-cover object-center select-none"
       />
-      <style>{`
-        @keyframes invite-river-shimmer {
-          0%,
-          100% {
-            filter: brightness(1) contrast(1);
-          }
-          50% {
-            filter: brightness(1.08) contrast(1.04);
-          }
-        }
-        .river-path-layer img {
-          animation: invite-river-shimmer 4s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 }
