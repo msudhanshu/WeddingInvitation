@@ -105,7 +105,7 @@ export const MILESTONES_BY_LEG: readonly MilestoneEventCopy[] = [
     description:
       '**Engr Puja Prabhakar**\n' +
       'Engineer at Mahindra Research valley\n'+
-      'MTech from NIT CALICUT\n' +
+      'MTech from NIT Calicut\n' +
       'Daughter of \n' +
       'Miss Lili Prabhakar &\n Prof Prabhat Prabhakar',
     // Example: uncomment and paste share link from Google Maps
@@ -146,7 +146,7 @@ export const MILESTONES_BY_LEG: readonly MilestoneEventCopy[] = [
     date: 'June 21, 2026',
     time: '05:00 PM – 11:00 PM',
     location: 
-    "Parmeshwar banquet hall, Kumharar gumati, Vachasatpati Nager," +
+    "Parmeshwar banquet hall, Kumharar gumati, Vachasatpati Nagar, \n" +
     "Sandalpur, Patna, Bihar-6"
     ,
     description: 'The sacred ceremony and grand reception.',
@@ -159,7 +159,7 @@ export const MILESTONES_BY_LEG: readonly MilestoneEventCopy[] = [
     description: 
     '**Manjeet Sudhanshu (Anuj) ** \n' +
     'Engineer at Jio \n'+
-    'BTech from IIT GUWAHATI\n' +
+    'BTech from IIT Guwahati\n' +
     'Son of : \n' +
     'Miss Dharmashila Devi &\n Engr Ram Pravesh Prasad',
     // mapsUrl: 'https://maps.google.com/...',

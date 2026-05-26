@@ -16,7 +16,7 @@ export const BOAT_MOVE_DURATION_SEC = 2;
 export const BOAT_MAX_LEG = SPLINE_ROUTE_MAX_LEG;
 
 /** Perspective endpoints per leg (bride → 4 stops → groom dock); spline motion interpolates between leg endpoints. */
-const BOAT_SCALES = [0.42, 0.56, 0.92, 1.2, 1.45, 2.0] as const;
+const BOAT_SCALES = [0.42, 0.56, 0.92, 1.2, 1.45, 2.5] as const;
 
 /**
  * **`false`**: boat stays upright (`rotate(0deg)`). Position/scale still follow the spline.
@@ -137,7 +137,7 @@ export function Boat({ position }: BoatProps) {
           transform: 'scale(1)',
         }}
       >
-        <div className="relative h-24 w-24">
+        <div className="relative h-24 w-24 overflow-visible">
           <ImageWithFallback
             src={LAYER_ASSETS.boat}
             alt=""
@@ -145,12 +145,13 @@ export function Boat({ position }: BoatProps) {
             className="relative z-[1] h-full w-full object-contain drop-shadow-2xl select-none"
           />
 
-          <div className="-translate-x-1/2 absolute -bottom-4 left-1/2 h-8 w-32">
+          {/* Circular water ripple centered under hull (transform origin matches inner scale pivot). */}
+          <div className="pointer-events-none absolute top-[92%] left-1/2 z-0 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
             <motion.div
-              className="pointer-events-none absolute inset-0 rounded-full border-2 border-blue-300/40"
+              className="absolute inset-2 rounded-full border-2 border-sky-400/35"
               animate={{
-                scale: [1, 1.55, 2.05],
-                opacity: [0.55, 0.22, 0],
+                scale: [0.92, 1.35, 1.95],
+                opacity: [0.5, 0.25, 0],
               }}
               transition={{
                 duration: 2.2,

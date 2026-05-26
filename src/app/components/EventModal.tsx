@@ -18,7 +18,7 @@ function MilestoneFormattedDescription({ text }: { text: string }) {
     <>
       {chunks.map((chunk, i) =>
         i % 2 === 1 ? (
-          <strong key={i} className="font-semibold text-gray-900">
+          <strong key={i} className="font-semibold text-[13px] text-gray-950">
             {chunk}
           </strong>
         ) : (
@@ -64,20 +64,8 @@ export function EventModal({ milestoneLeg, onClose }: EventModalProps) {
   const hasMetaBlock = hasTime || hasLocation || hasMaps;
   const hasAnyCopy = hasHeader || hasMetaBlock || hasDescription;
 
-  /** Longer copy → allow a wider cap (still `w-fit` so short strings stay narrow). */
-  const mapsLineForWidth = hasMaps ? (milestoneText(event.mapsLabel) ? event.mapsLabel!.trim() : 'Open in Google Maps') : '';
-  const joinedLength = [
-    event.title,
-    event.date,
-    event.time,
-    event.location,
-    mapsLineForWidth,
-    event.description,
-  ]
-    .filter(milestoneText)
-    .join('').length;
-  const widthCap =
-    joinedLength > 220 ? 'max-w-[min(94vw,24rem)]' : joinedLength > 90 ? 'max-w-[min(92vw,20rem)]' : 'max-w-[min(90vw,18rem)]';
+  /** Same width for every milestone card (wedding fullscreen uses its own modal). */
+  const MODAL_PANEL_CLASS = 'w-[min(92vw,22rem)] shrink-0';
 
   const showDescDivider = hasDescription && (hasMetaBlock || hasHeader);
 
@@ -100,7 +88,7 @@ export function EventModal({ milestoneLeg, onClose }: EventModalProps) {
         role="dialog"
         aria-modal="true"
         aria-label={hasTitle ? event.title!.trim() : 'Event details'}
-        className={`relative w-fit min-w-[10.5rem] ${widthCap} rounded-2xl border border-white/45 bg-white/28 px-4 py-4 shadow-lg backdrop-blur-sm pointer-events-auto`}
+        className={`relative ${MODAL_PANEL_CLASS} rounded-2xl border border-white/45 bg-white/28 px-5 py-5 shadow-lg backdrop-blur-sm pointer-events-auto`}
         initial={{ scale: 0.94, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', duration: 0.42 }}
@@ -108,31 +96,31 @@ export function EventModal({ milestoneLeg, onClose }: EventModalProps) {
       >
         {hasHeader ? (
           <div className="min-w-0 pt-0.5">
-            <Calendar className={`mb-1 h-4 w-4 shrink-0 ${accentCalendarClass(event.color)}`} aria-hidden />
-            {hasTitle ? <h2 className="text-sm font-bold leading-tight text-gray-950">{event.title!.trim()}</h2> : null}
+            <Calendar className={`mb-1.5 h-5 w-5 shrink-0 ${accentCalendarClass(event.color)}`} aria-hidden />
+            {hasTitle ? <h2 className="text-base font-bold leading-snug text-gray-950">{event.title!.trim()}</h2> : null}
             {hasDate ? (
-              <p className="mt-0.5 text-[11px] font-medium text-gray-800">{event.date!.trim()}</p>
+              <p className="mt-1 text-sm font-medium text-gray-800">{event.date!.trim()}</p>
             ) : null}
           </div>
         ) : null}
 
         {(hasMetaBlock || hasDescription) && hasAnyCopy ? (
-          <div className={`space-y-1.5 text-[11px] leading-snug text-gray-800 ${hasHeader ? 'mt-3' : 'mt-1'}`}>
+          <div className={`space-y-2 text-sm leading-snug text-gray-800 ${hasHeader ? 'mt-4' : 'mt-1'}`}>
             {hasTime ? (
-              <div className="flex gap-2">
-                <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-600" aria-hidden />
+              <div className="flex gap-2.5">
+                <Clock className="mt-0.5 h-4 w-4 shrink-0 text-gray-600" aria-hidden />
                 <span>{event.time!.trim()}</span>
               </div>
             ) : null}
             {hasLocation ? (
-              <div className="flex gap-2">
-                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-600" aria-hidden />
+              <div className="flex gap-2.5">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gray-600" aria-hidden />
                 <span>{event.location!.trim()}</span>
               </div>
             ) : null}
             {hasMaps ? (
-              <div className="flex gap-2">
-                <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-600" aria-hidden />
+              <div className="flex gap-2.5">
+                <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-gray-600" aria-hidden />
                 <a
                   href={mapsHref}
                   target="_blank"
@@ -146,7 +134,7 @@ export function EventModal({ milestoneLeg, onClose }: EventModalProps) {
             ) : null}
             {hasDescription ? (
               <p
-                className={`whitespace-pre-line text-[10px] leading-relaxed text-gray-700 ${showDescDivider ? 'border-t border-gray-400/30 pt-2' : 'pt-0.5'}`}
+                className={`whitespace-pre-line text-[13px] leading-relaxed text-gray-800 ${showDescDivider ? 'border-t border-gray-400/30 pt-3' : 'pt-0.5'}`}
               >
                 <MilestoneFormattedDescription text={event.description!} />
               </p>
@@ -154,7 +142,7 @@ export function EventModal({ milestoneLeg, onClose }: EventModalProps) {
           </div>
         ) : null}
 
-        {!hasAnyCopy ? <p className="mt-2 text-center text-[11px] text-gray-600">Details coming soon.</p> : null}
+        {!hasAnyCopy ? <p className="mt-2 text-center text-sm text-gray-600">Details coming soon.</p> : null}
       </motion.div>
     </motion.div>
   );

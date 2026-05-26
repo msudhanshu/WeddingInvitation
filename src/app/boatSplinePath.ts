@@ -75,7 +75,7 @@ export const BOAT_SPLINE_KNOTS: BoatSplineKnot[] = [
     id: 'groom-dock-stop',
     mileLeg: 5,
     left: 70,
-    top: 84,
+    top: 90,
     rotateDeg: 0,
   },
 ];

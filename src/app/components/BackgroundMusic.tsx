@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 /** Copy served from `/public/media/bg-music.mp3` — plain path avoids brittle URL-encoding. */
-const MUSIC_SRC = '/media/bg-music.mp3';
+const MUSIC_SRC = '/media/vivah.mp3';
 
 const PEAK_VOLUME = 0.55;
 
@@ -13,6 +13,12 @@ const FADE_OUT_SEC = 2.8;
 
 /** Snap to loop when this close to the end (during near-silent tail). */
 const LOOP_RESTART_EPS = 0.08;
+
+/**
+ * If splash auto-dismisses with no gesture, `play()` usually still fails — keep a late retry so
+ * first in-app tap (e.g. journey) can succeed via gesture listeners.
+ */
+const FALLBACK_TRY_PLAY_AFTER_MS = 8500;
 
 function clamp01(n: number): number {
   return Math.min(1, Math.max(0, n));
@@ -27,8 +33,8 @@ function teardownGestureListeners(handler: () => void) {
 }
 
 /**
- * Looped background MP3 with soft head/tail. Browsers need a user gesture before audio —
- * listeners use **capture** so `stopPropagation()` on inner elements does not block unlock.
+ * Looped background MP3 with soft head/tail. Tries to start when the entry splash dismisses
+ * (same turn as tap/key for autoplay policy), and falls back to any first gesture.
  */
 export function BackgroundMusic() {
   const rafRef = useRef(0);
@@ -63,7 +69,6 @@ export function BackgroundMusic() {
       const t = audio.currentTime;
 
       const gainIntro = clamp01(t / FADE_IN_SEC);
-      /** Until metadata is reliable, skip tail duck so we are not stuck at volume 0. */
       const hasTailFade = Number.isFinite(d) && d > FADE_IN_SEC + FADE_OUT_SEC * 0.4;
       const gainTail = hasTailFade ? clamp01((d - t) / FADE_OUT_SEC) : 1;
       audio.volume = PEAK_VOLUME * Math.min(gainIntro, gainTail);
@@ -79,22 +84,46 @@ export function BackgroundMusic() {
       driveVolumes();
     }
 
-    /** Invoke `play()` synchronously inside the gesture stack — do not `await` before it. */
-    function requestStart() {
+    function attachGestureListeners(fn: () => void) {
+      window.addEventListener('touchstart', fn, { capture: true, passive: true });
+      document.addEventListener('pointerdown', fn, { capture: true, passive: true });
+      document.addEventListener('click', fn, true);
+      window.addEventListener('keydown', fn);
+    }
+
+    function tryBeginPlayback() {
       if (userStarted || !alive) return;
-      teardownGestureListeners(requestStart);
+      teardownGestureListeners(beginPlayback);
       userStarted = true;
 
       audio.volume = 0;
       void audio.play().catch(() => {
         userStarted = false;
+        if (alive) attachGestureListeners(beginPlayback);
       });
     }
 
-    window.addEventListener('touchstart', requestStart, { capture: true, passive: true });
-    document.addEventListener('pointerdown', requestStart, { capture: true, passive: true });
-    document.addEventListener('click', requestStart, true);
-    window.addEventListener('keydown', requestStart);
+    function beginPlayback() {
+      tryBeginPlayback();
+    }
+
+    function onSplashDismissed() {
+      tryBeginPlayback();
+    }
+
+    window.addEventListener('entry-splash-dismissed', onSplashDismissed);
+
+    /* Splash already gone before this effect (slow JS load) — still try once. */
+    const w = window as Window & { __weddingInviteSplashDismissed?: boolean };
+    if (w.__weddingInviteSplashDismissed || !document.getElementById('entry-splash')) {
+      queueMicrotask(() => tryBeginPlayback());
+    }
+
+    attachGestureListeners(beginPlayback);
+
+    const fallbackTryId = window.setTimeout(() => {
+      tryBeginPlayback();
+    }, FALLBACK_TRY_PLAY_AFTER_MS);
 
     audio.addEventListener('playing', () => startDriveIfPlaying());
 
@@ -110,7 +139,9 @@ export function BackgroundMusic() {
 
     return () => {
       alive = false;
-      teardownGestureListeners(requestStart);
+      window.removeEventListener('entry-splash-dismissed', onSplashDismissed);
+      window.clearTimeout(fallbackTryId);
+      teardownGestureListeners(beginPlayback);
       stopDriveLoop();
       audio.pause();
       audio.removeAttribute('src');

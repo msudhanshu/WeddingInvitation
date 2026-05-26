@@ -1,16 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Puja &amp; Manjeet — Wedding Invitation</title>
+    <meta
+      name="description"
+      content="You’re invited — open for our interactive wedding journey. Save the date: 21 June 2026."
+    />
+    <link rel="canonical" href="https://weddinginvitation.sudhanshu-manjeet.workers.dev/" />
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-      <title>Interactive Wedding Invitation Site</title>
-      <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
-    </head>
+    <!--
+      Link preview (WhatsApp, iMessage, Slack, etc.): crawlers read these tags from raw HTML.
+      og:image must be an absolute HTTPS URL. Update the domain if you change hosting.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://weddinginvitation.sudhanshu-manjeet.workers.dev/" />
+    <meta property="og:title" content="Puja & Manjeet — Wedding Invitation" />
+    <meta
+      property="og:description"
+      content="You’re invited. Save the date: 21 June 2026 — tap the link to explore our invite."
+    />
+    <meta
+      property="og:image"
+      content="https://weddinginvitation.sudhanshu-manjeet.workers.dev/card.png"
+    />
+    <meta property="og:image:alt" content="Wedding invitation card — Puja and Manjeet" />
+    <meta property="og:locale" content="en_IN" />
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Puja & Manjeet — Wedding Invitation" />
+    <meta
+      name="twitter:description"
+      content="You’re invited. Save the date: 21 June 2026 — open for the full experience."
+    />
+    <meta
+      name="twitter:image"
+      content="https://weddinginvitation.sudhanshu-manjeet.workers.dev/card.png"
+    />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      #root {
+        height: 100%;
+      }
+      /* Tap-to-enter splash: covers the app until the guest dismisses it (crawlers ignore this). */
+      #entry-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: max(0.5rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right))
+          max(0.5rem, env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-left));
+        border: none;
+        background: radial-gradient(ellipse at 50% 20%, rgb(40 40 45) 0%, rgb(24 24 27) 65%);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #entry-splash:focus-visible {
+        outline: 3px solid rgb(52 211 153);
+        outline-offset: 2px;
+      }
+      #entry-splash img {
+        max-width: min(100%, 28rem);
+        max-height: min(92dvh, 100%);
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 22px 48px rgb(0 0 0 / 0.45));
+      }
+      #entry-splash .entry-hint {
+        position: absolute;
+        bottom: max(1rem, env(safe-area-inset-bottom));
+        left: 50%;
+        transform: translateX(-50%);
+        font:
+          600 13px/1.3 system-ui,
+          sans-serif;
+        color: rgb(212 212 216);
+        letter-spacing: 0.02em;
+        text-align: center;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <button type="button" id="entry-splash" aria-label="Open interactive invitation">
+      <img src="/card.png" alt="" decoding="async" fetchpriority="high" />
+      <span class="entry-hint">Tap to open the invitation</span>
+    </button>
+    <div id="root"></div>
+    <script>
+      (function () {
+        var splash = document.getElementById('entry-splash');
+        if (!splash) return;
+        var autoDismissMs = 7000;
+        var dismissed = false;
+        var autoDismissId = null;
+
+        function dismiss() {
+          if (dismissed) return;
+          dismissed = true;
+          if (autoDismissId !== null) {
+            window.clearTimeout(autoDismissId);
+            autoDismissId = null;
+          }
+          /* Lets React start BGM in the same user-activation turn as tap / key (autoplay policy). */
+          try {
+            window.__weddingInviteSplashDismissed = true;
+          } catch (e) {}
+          try {
+            window.dispatchEvent(new CustomEvent('entry-splash-dismissed'));
+          } catch (e) {}
+          splash.remove();
+          window.removeEventListener('keydown', onKey);
+        }
+
+        function onKey(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            dismiss();
+          }
+        }
+
+        autoDismissId = window.setTimeout(dismiss, autoDismissMs);
+        splash.addEventListener('click', dismiss);
+        window.addEventListener('keydown', onKey);
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
