@@ -103,11 +103,11 @@ export const MILESTONES_BY_LEG: readonly MilestoneEventCopy[] = [
     date: '28 Feb 2026',
     location: "Village- Mathura, Hajipur, Vaishali, Bihar",
     description:
-      '**Engr Puja Prabhakar**\n' +
-      'Engineer at Mahindra Research valley\n'+
-      'MTech from NIT Calicut\n' +
+      '**Puja Prabhakar**\n' +
+      // 'Engineer at Mahindra Research valley\n'+
+      // 'MTech from NIT Calicut\n' +
       'Daughter of \n' +
-      'Miss Lili Prabhakar &\n Prof Prabhat Prabhakar',
+      'Mrs. Lili Prabhakar &\n Prof. Prabhat Prabhakar',
     // Example: uncomment and paste share link from Google Maps
     // mapsUrl: 'https://maps.google.com/?q=Hajipur+Vaishali+Bihar',
     color: 'rose',
@@ -157,11 +157,11 @@ export const MILESTONES_BY_LEG: readonly MilestoneEventCopy[] = [
     eventDateISO: '2027-06-22',
     location: 'Village- Pachapan-Par, Nadaul, Patna, Bihar',
     description: 
-    '**Manjeet Sudhanshu (Anuj) ** \n' +
-    'Engineer at Jio \n'+
-    'BTech from IIT Guwahati\n' +
+    '**Manjeet Sudhanshu (Anuj)** \n' +
+    // 'Engineer at Jio \n'+
+    // 'BTech from IIT Guwahati\n' +
     'Son of : \n' +
-    'Miss Dharmashila Devi &\n Engr Ram Pravesh Prasad',
+    'Mrs. Dharmashila Devi &\n Er. Ram Pravesh Prasad',
     // mapsUrl: 'https://maps.google.com/...',
     color: 'red',
   },
