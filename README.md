@@ -1,225 +1,117 @@
-# 💐 Wedding Invitation - Isometric Mobile Site
+# Puja & Manjeet — Wedding Invitation
 
-A beautiful, interactive wedding invitation with **isometric top-down view**, seamless SVG graphics, and smooth animations, designed for mobile portrait mode.
+An interactive, mobile-first wedding journey: a illustrated river scene, boat milestones, and ceremony details—wrapped in a phone-sized frame with optional ambient music and autoplay tour.
 
-## ✨ Features
+**Live site:** [https://weddinginvitation.sudhanshu-manjeet.workers.dev/](https://weddinginvitation.sudhanshu-manjeet.workers.dev/)
 
-- **Isometric Design**: Top-down view matching hand-drawn sketch style
-- **Layered Architecture**: Each element (grass, river, trees, villages, lotus, boat) in separate layers
-- **Seamless Integration**: All SVG elements blend naturally into one cohesive environment
-- **Animated River**: Separate river layer with CSS animation for flowing water effect
-- **Interactive**: Click lotus flowers to reveal event details
-- **Mobile-First**: Optimized for portrait mode on smartphones
-- **Easy to Customize**: Swap SVGs, adjust positions, modify river path
+---
 
-## 🎨 Visual Journey
+## Front card (save-the-date & link previews)
 
-```
-Bride's Village (Top-Left) 🏡 👨‍👩‍👧
-          ↓
-    🌊 Winding River 🌊
-          ↓
-    Lotus 1: Engagement 🪷
-          ↓
-    Lotus 2: Mehendi 🪷
-          ↓
-    Lotus 3: Wedding 🪷
-          ↓
-Groom's Village (Bottom-Right) 🏡 👨‍👩‍👧
-```
+Tap-to-enter splash and social / WhatsApp previews use the same artwork. The JPEG below is the optimized Open Graph asset (`og-image.jpg`, small file size for crawlers).
 
-## 📂 Layer Structure (Isometric View)
+<p align="center">
+  <img src="public/og-image.jpg" alt="Save the date — Puja weds Manjeet, 21 June 2026 — illustrated wedding card" width="360" />
+</p>
 
-| Layer | Component | Purpose | Z-Index |
-|-------|-----------|---------|---------|
-| 0 | `GrassBackground` | Green grass/land base | 0 |
-| 1 | `RiverPath` | **Animated winding river** (CSS) | 10 |
-| 2 | `Trees` | Scattered trees (both sides) | 20 |
-| 3 | `Villages` | Houses + stick figure families | 30 |
-| 4 | `LotusFlowers` | Clickable milestones | 40 |
-| 5 | `Boat` | Bowl boat + bride figure | 50 |
-| 6 | `EventModal` | Event details popup | 100 |
+Source files: **`index.html`** (splash + meta tags), **`public/og-image.jpg`**, **`public/card.png`** (full-resolution splash).
 
-## 🎯 Design Principles
+---
 
-1. **Isometric Top-Down View**: River flows vertically, all elements viewed from above
-2. **SVG Graphics**: Crisp, scalable vector graphics for all elements
-3. **Seamless Blending**: No white backgrounds, natural color scheme
-4. **Simple Shapes**: Minimalist design matching sketch aesthetics
-5. **Separate River Layer**: Enables independent CSS animation control
+## Interactive scene (React app)
 
-## 🚀 Quick Start
+After the splash, guests explore the winding river, lotus milestones, bride & groom markers, and fullscreen ceremony copy. The screenshot is kept as **`public/readme-interactive-scene.png`** (a copy of `Screenshot 2026-05-27 at 8.08.13 PM.png` with an ASCII filename so GitHub and editors resolve the image reliably).
 
-The site is ready! View the preview to see the interactive wedding journey.
+<p align="center">
+  <img src="public/readme-interactive-scene.png" alt="Interactive wedding invitation — river valley scene with boat, lotus flowers, and bride and groom labels" width="420" />
+</p>
 
-## 🎯 How It Works
+---
 
-1. **Start**: Bowl-shaped boat with bride at top-left village
-2. **Click Lotus**: Tap any lotus to:
-   - View event details (date, time, venue)
-   - Animate boat to that milestone
-3. **Journey**: Boat follows winding river path smoothly
-4. **Destination**: Arrives at bottom-right groom's village
+## Highlights
 
-## 🔧 Customization
+- **Storybook landscape** — Full-bleed forest / valley art, grass base, optional **river** plate with **WebGL water** shader (falls back to static PNG when needed).
+- **Journey** — Boat moves along a **spline** path (`boatSplinePath.ts`); milestones open **event modals** and a **fullscreen wedding** screen.
+- **Touch & motion** — Lotus and village targets, sky / chevrons for “next”, **wind drift** particles (CSS), subtle **boat** ripple.
+- **Pass experience** — Optional **autoplay tour** through milestones until the ceremony card (stops on any real interaction).
+- **Audio** — Background track with gesture / splash-dismiss friendly **play** unlocking.
+- **Polish** — Grayscale “past event” treatment from dates in config, **reduced motion** respected for wind + river.
+- **Hosting** — Static + **Cloudflare Workers** (`npm run deploy`). See **`wrangler`** / Vite plugin in the repo.
 
-See **[LAYER_STRUCTURE.md](./LAYER_STRUCTURE.md)** for complete guide.
+---
 
-### Quick Customizations
+## Tech stack
 
-**Modify River Path**:
-```tsx
-// Edit: src/app/components/RiverPath.tsx
-<path d="M 35 0 Q 25 15, 30 30 ..." /> // Change SVG coordinates
-```
+| Area | Choice |
+|------|--------|
+| UI | React 18 + TypeScript |
+| Styling | Tailwind CSS v4 |
+| Motion | Motion (Framer Motion family) |
+| Assets | PNG layers under **`public/layers/`** (see **`layerAssets.ts`**) |
+| River | **`RiverWaterShader.tsx`** (WebGL1 fragment shader) |
+| Build | Vite 6 + **`@cloudflare/vite-plugin`** |
 
-**Add/Remove Trees**:
-```tsx
-// Edit: src/app/components/Trees.tsx
-const trees = [
-  { x: '10%', y: '25%', size: 'medium', type: 'rounded' },
-  // Add more trees here
-];
-```
+---
 
-**Adjust Lotus Positions** (follow river):
-```tsx
-// Edit: src/app/components/LotusFlowers.tsx
-const lotusPositions = [
-  { top: '28%', left: '32%', label: 'Engagement' }, // Adjust %
-];
-```
-
-**Update Boat Path** (match river curve):
-```tsx
-// Edit: src/app/components/Boat.tsx
-const pathCoordinates = [
-  { top: '12%', left: '28%', rotate: 15 },
-  // Match river bends
-];
-```
-
-**Change Event Details**:
-```tsx
-// Edit: src/app/components/EventModal.tsx
-const events = [
-  {
-    title: 'Engagement Ceremony',
-    date: 'June 15, 2026',
-    time: '6:00 PM - 9:00 PM',
-    location: "Bride's Family Garden",
-  },
-];
-```
-
-## 📱 Mobile Features
-
-- ✅ **Portrait Mode**: Optimized for vertical phone screens
-- ✅ **Touch Enabled**: All lotus flowers are tappable
-- ✅ **Responsive**: Percentage-based positioning scales perfectly
-- ✅ **Smooth Animations**: Hardware-accelerated with Motion
-- ✅ **SVG Scaling**: Crisp graphics at any resolution
-
-## 🛠️ Tech Stack
-
-- **React 18** with TypeScript
-- **Tailwind CSS v4** for styling
-- **Motion (Framer Motion)** for smooth animations
-- **SVG Graphics** for all visual elements
-- **CSS Animations** for river flow
-
-## 📦 Export to Cursor IDE
-
-Standard React project, ready to customize:
+## Quick start
 
 ```bash
-pnpm install
-pnpm run dev
+npm install
+npm run dev
 ```
 
-Copy entire project folder to Cursor and start editing!
+- **Dev:** [http://localhost:5173](http://localhost:5173) — tap the splash to enter the app.
 
-## 🎨 Component Details
-
-### 🌿 Grass Background
-- Green gradient base layer
-- Subtle texture pattern
-- Natural grass colors
-
-### 🌊 River Path (Animatable!)
-- SVG winding path
-- Blue gradient water
-- CSS shimmer animation
-- **Fully controllable flow speed**
-
-### 🌳 Trees
-- 13 SVG trees scattered naturally
-- Two styles: rounded & bushy
-- Various sizes for depth
-- Left and right side placement
-
-### 🏡 Villages
-- Simple house SVG (roof + walls)
-- Stick figure families (3 people each)
-- Pink theme (bride) / Blue theme (groom)
-- Small labels for clarity
-
-### 🪷 Lotus Flowers
-- SVG lotus with lily pad
-- Floating animation
-- Click to reveal events
-- Positioned along river path
-
-### 🚣 Boat
-- Bowl-shaped boat SVG
-- Stick figure bride in pink
-- Decorative flowers
-- Smooth path animation
-- Water ripples
-
-### 📅 Event Modal
-- Slide-in animation
-- Color-coded cards
-- Event details (date/time/venue)
-- Backdrop blur effect
-
-## 💡 Enhancement Ideas
-
-- Parallax scrolling
-- Tree leaves animation
-- Flying birds
-- Water sound effects
-- Day/night cycle
-- Weather effects (rain/sun)
-- Photo gallery
-- RSVP form
-- WhatsApp integration
-- Google Maps venue link
-
-## 📐 Isometric Tips
-
-All elements maintain consistent top-down perspective:
-- River flows straight down
-- Trees viewed from above (circular crowns)
-- Houses show simple roof angle
-- Boat visible from overhead
-- Lotus flat on water surface
-
-## 📄 Files Overview
-
-```
-src/app/
-├── App.tsx                 # Main orchestrator
-└── components/
-    ├── GrassBackground.tsx # Layer 0: Land
-    ├── RiverPath.tsx       # Layer 1: Water (animated)
-    ├── Trees.tsx           # Layer 2: Forest
-    ├── Villages.tsx        # Layer 3: Homes
-    ├── LotusFlowers.tsx    # Layer 4: Milestones
-    ├── Boat.tsx            # Layer 5: Journey
-    └── EventModal.tsx      # Layer 6: Details
+```bash
+npm run build     # production bundle → dist/
+npm run deploy    # build + wrangler deploy
 ```
 
 ---
 
-**Built with isometric design for a seamless mobile wedding invitation!** 🌸🚣‍♀️💐
+## Customization (where to edit)
+
+| What | Where |
+|------|--------|
+| Event copy, dates, wedding fullscreen text, leg labels | **`src/app/milestoneConfig.ts`** |
+| Asset paths (forest, river, flowers, boat) | **`src/app/layerAssets.ts`** |
+| Boat path / legs | **`src/app/boatSplinePath.ts`**, **`Boat.tsx`**, **`App.tsx`** |
+| Lotus positions & hit targets | **`src/app/components/LotusFlowers.tsx`** |
+| River on/off & blend | **`src/app/App.tsx`** (`SHOW_RIVER_LAYER`), **`RiverPath.tsx`** |
+| Splash, **Open Graph**, Twitter cards | **`index.html`** |
+| Link preview image (regenerate from `card.png` if art changes) | Regenerate **`public/og-image.jpg`** (see comment in `index.html`) |
+
+More structural notes: **`LAYER_STRUCTURE.md`** (may predate some components; prefer the table above and `src/app/components/` for truth).
+
+---
+
+## Project layout (app)
+
+```
+src/app/
+├── App.tsx                          # Scene, navigation, autopilot, modals
+├── boatSplinePath.ts                # River / boat spline keyframes
+├── layerAssets.ts                   # /public/layers URLs
+├── milestoneConfig.ts               # All ceremony & milestone copy
+└── components/
+    ├── GrassBackground.tsx
+    ├── ForestBackground.tsx
+    ├── RiverPath.tsx                # River plate + shader mount
+    ├── RiverWaterShader.tsx         # WebGL water
+    ├── WindDrift.tsx
+    ├── LotusFlowers.tsx
+    ├── Villages.tsx
+    ├── Boat.tsx
+    ├── EventModal.tsx
+    ├── WeddingCeremonyFullscreenModal.tsx
+    ├── BackgroundMusic.tsx
+    └── MobileInviteShell.tsx
+```
+
+---
+
+## License / credits
+
+Private project for the wedding invitation. Art and music are your own to license.
+
+Built with care for guests on phones first—**open the [live link](https://weddinginvitation.sudhanshu-manjeet.workers.dev/), tap through, and enjoy the day.** 💐
